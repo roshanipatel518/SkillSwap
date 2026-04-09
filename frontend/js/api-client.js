@@ -1,11 +1,14 @@
 // API Client for Django Backend
 class ApiClient {
     constructor() {
-        // Auto-detect backend URL
+        // Auto-detect backend URL based on environment
         const hostname = window.location.hostname;
-        if (hostname === 'skillswap-frontend-bmxn.onrender.com') {
-            this.baseURL = 'https://skillswap-backend-iiz3.onrender.com/api';
+        
+        // Production: Use Render backend URL
+        if (hostname.includes('onrender.com') || hostname.includes('netlify.app')) {
+            this.baseURL = 'https://skillswap-backend.onrender.com/api';
         } else {
+            // Local development
             this.baseURL = 'http://localhost:8000/api';
         }
         this.token = localStorage.getItem('token');

@@ -1,14 +1,13 @@
-#!/usr/bin/env bash
-set -o errexit
+#!/bin/bash
+# Build script for deployment
 
-# Clean old static files to save space
-rm -rf staticfiles/*
+echo "Installing dependencies..."
+pip install -r requirements.txt
 
-# Install dependencies
-pip install -r requirements.txt --no-cache-dir
+echo "Collecting static files..."
+python manage.py collectstatic --no-input
 
-# Collect static files
-python manage.py collectstatic --no-input --clear
-
-# Run migrations
+echo "Running migrations..."
 python manage.py migrate --no-input
+
+echo "Build completed!"
