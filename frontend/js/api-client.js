@@ -5,13 +5,18 @@ class ApiClient {
         const hostname = window.location.hostname;
         
         // Production: Use Render backend URL
-        if (hostname.includes('onrender.com') || hostname.includes('netlify.app')) {
+        if (hostname.includes('onrender.com')) {
+            // Replace 'skillswap-backend' with your actual backend service name
+            this.baseURL = 'https://skillswap-backend.onrender.com/api';
+        } else if (hostname.includes('netlify.app')) {
             this.baseURL = 'https://skillswap-backend.onrender.com/api';
         } else {
             // Local development
             this.baseURL = 'http://localhost:8000/api';
         }
         this.token = localStorage.getItem('token');
+        
+        console.log('API Base URL:', this.baseURL); // Debug log
     }
 
     setToken(token) {
