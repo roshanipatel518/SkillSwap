@@ -11,9 +11,12 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,0.0.0.0,.onrender.com',
-    cast=Csv()
-)
+    default='localhost,127.0.0.1,0.0.0.0'
+).split(',')
+
+# Add wildcard for Render subdomains
+if not DEBUG:
+    ALLOWED_HOSTS.append('.onrender.com')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -117,13 +120,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 APPEND_SLASH = True
 
 # CORS settings - Allow all for Render deployment
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only allow all in DEBUG mode
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = config(
+
+# Parse CORS origins properly
+cors_origins_str = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,http://127.0.0.1:3000,https://*.onrender.com',
-    cast=Csv()
+    default='http://localhost:3000,http://127.0.0.1:3000'
 )
+CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_str.split(',') if origin.strip()]
+
+# Add wildcard support for Render preview deployments
+if not DEBUG:
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        r"^https://.*\.onrender\.com$",
+        r"^https://.*\.netlify\.app$",
+    ]
+
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -135,7 +148,7 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
-CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
 
 # REST Framework settings
 REST_FRAMEWORK = {

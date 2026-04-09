@@ -4,8 +4,9 @@ services:
     name: skillswap-backend
     env: python
     region: oregon
-    buildCommand: "cd backend && pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
-    startCommand: "cd backend && gunicorn skillswap.wsgi:application"
+    rootDir: backend
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --no-input --clear && python manage.py migrate --no-input && python create_superuser.py"
+    startCommand: "gunicorn skillswap.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -18,9 +19,9 @@ services:
           name: skillswap-db
           property: connectionString
       - key: ALLOWED_HOSTS
-        value: .onrender.com
+        value: .onrender.com,localhost,127.0.0.1
       - key: CORS_ALLOWED_ORIGINS
-        value: https://skillswap-frontend.onrender.com
+        value: https://skillswap-frontend.onrender.com,http://localhost:3000
       - key: JWT_SECRET
         generateValue: true
 
