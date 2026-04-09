@@ -6,7 +6,7 @@ class ApiClient {
         
         // Production: Use Render backend URL
         if (hostname.includes('onrender.com') || hostname.includes('netlify.app')) {
-            this.baseURL = 'https://skillswap-e7kv.onrender.com';
+            this.baseURL = 'https://skillswap-backend.onrender.com/api';
         } else {
             // Local development
             this.baseURL = 'http://localhost:8000/api';
