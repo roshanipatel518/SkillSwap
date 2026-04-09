@@ -30,27 +30,38 @@ class ApiClient {
     }
 
     async request(endpoint, options = {}) {
-        const res = await fetch(this.baseURL + endpoint, {
-            headers: {
-                'Content-Type': 'application/json',
-                ...(this.token && { Authorization: `Bearer ${this.token}` }),
-            },
-            ...options,
-        });
-
-        let data;
-
+        const url = this.baseURL + endpoint;
+        console.log('Making request to:', url); // Debug log
+        
         try {
-            data = await res.json(); // ✅ read ONLY ONCE
-        } catch (e) {
-            data = null;
-        }
+            const res = await fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(this.token && { Authorization: `Bearer ${this.token}` }),
+                },
+                ...options,
+            });
 
-        if (!res.ok) {
-            throw new Error(data?.detail || 'API request failed');
-        }
+            console.log('Response status:', res.status); // Debug log
 
-        return data;
+            let data;
+            try {
+                data = await res.json();
+            } catch (e) {
+                console.error('Failed to parse JSON:', e);
+                data = null;
+            }
+
+            if (!res.ok) {
+                console.error('API Error:', data);
+                throw new Error(data?.detail || data?.message || `API request failed with status ${res.status}`);
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Request failed:', error);
+            throw error;
+        }
     }
 
     // Auth endpoints
