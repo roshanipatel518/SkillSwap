@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-production')
 
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
@@ -116,12 +116,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Append slash
 APPEND_SLASH = True
 
-# CORS settings
-CORS_ALLOW_ALL_ORIGINS = DEBUG
+# CORS settings - Allow all for Render deployment
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,http://127.0.0.1:3000',
+    default='http://localhost:3000,http://127.0.0.1:3000,https://*.onrender.com',
     cast=Csv()
 )
 CORS_ALLOW_HEADERS = [
