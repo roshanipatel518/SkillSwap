@@ -28,9 +28,13 @@ const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             const response = await window.apiClient.login(email, password);
-            window.apiClient.setToken(response.token);
-            setUser(response.user);
-            return response;
+            if (response && response.token) {
+                window.apiClient.setToken(response.token);
+                setUser(response.user);
+                return response;
+            } else {
+                throw new Error('Invalid response from server');
+            }
         } catch (error) {
             throw error;
         }
@@ -39,9 +43,13 @@ const AuthProvider = ({ children }) => {
     const signup = async (name, email, password) => {
         try {
             const response = await window.apiClient.signup(name, email, password);
-            window.apiClient.setToken(response.token);
-            setUser(response.user);
-            return response;
+            if (response && response.token) {
+                window.apiClient.setToken(response.token);
+                setUser(response.user);
+                return response;
+            } else {
+                throw new Error('Invalid response from server');
+            }
         } catch (error) {
             throw error;
         }
