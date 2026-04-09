@@ -329,7 +329,11 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login' }) => {
       }
     } catch (error) {
       console.error('Auth Error:', error);
-      setError(error.message || 'Authentication failed');
+      if (error.message.includes('Failed to fetch')) {
+        setError('Backend is waking up... Please wait 30 seconds and try again.');
+      } else {
+        setError(error.message || 'Authentication failed');
+      }
     } finally {
       setLoading(false);
     }
@@ -393,7 +397,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login' }) => {
           
           <button type="submit" disabled={loading}
                   className="w-full py-3 mt-2 rounded-full bg-gradient-to-r from-brand-500 to-brand-600 text-white font-medium hover:from-brand-600 hover:to-brand-700 disabled:opacity-50 transition-all shadow-lg shadow-brand-500/25">
-            {loading ? 'Please wait...' : activeTab === 'login' ? 'Sign In' : 'Create Account'}
+            {loading ? 'Please wait... (Backend waking up)' : activeTab === 'login' ? 'Sign In' : 'Create Account'}
           </button>
         </form>
       </div>
